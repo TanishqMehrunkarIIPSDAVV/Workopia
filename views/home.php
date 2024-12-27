@@ -1,4 +1,4 @@
-    <?php
+    <?=
     loadComponent("head");
     loadComponent("navbar");
     loadComponent("showcase-search");
