@@ -18,10 +18,14 @@ function basePath($path="")
  * @return void
  */
 
-function load($name)
+function load($name,$data=[])
 {
     $vp = basePath("views/{$name}.php");
-    if(file_exists($vp)) require_once $vp;
+    if(file_exists($vp))
+    {
+        extract($data);
+        require_once $vp;
+    }
     else echo "View Path $name does not exist";
 }
 
@@ -31,10 +35,14 @@ function load($name)
  * @return void
  */
 
-function loadComponent($name)
+function loadComponent($name,$data=[])
 {
     $cp = basePath("views/components/{$name}.php");
-    if(file_exists($cp)) require_once $cp;
+    if(file_exists($cp))
+    {
+        extract($data);
+        require_once $cp;
+    }
     else echo "Component Path $name does not exist";
 }
 
@@ -63,4 +71,16 @@ function inspectDie($value)
     var_dump($value);
     echo "</pre>";
     die();
+}
+
+/**
+ * Format Salary
+ *
+ * @param string $salary
+ * @return string
+ */
+
+function formatSalary($salary)
+{
+    return "₹".number_format(floatval($salary));
 }
