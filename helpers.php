@@ -20,7 +20,7 @@ function basePath($path="")
 
 function load($name,$data=[])
 {
-    $vp = basePath("views/{$name}.php");
+    $vp = basePath("App/views/{$name}.php");
     if(file_exists($vp))
     {
         extract($data);
@@ -37,7 +37,7 @@ function load($name,$data=[])
 
 function loadComponent($name,$data=[])
 {
-    $cp = basePath("views/components/{$name}.php");
+    $cp = basePath("App/views/components/{$name}.php");
     if(file_exists($cp))
     {
         extract($data);

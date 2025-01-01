@@ -1,0 +1,16 @@
+{
+    "vendor-name": "TanishqMehrunkarIIPSDAVV/Workopia",
+    "description": "Job Listing Application",
+    "authors": [
+        {
+            "name": "Tanishq Mehrunkar",
+            "email": "mehrunkart@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "Framework/",
+            "App\\": "App/"
+        }
+    }
+}

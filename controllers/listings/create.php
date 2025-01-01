@@ -1,3 +1,0 @@
-<?php
-
-load("listings/create");
