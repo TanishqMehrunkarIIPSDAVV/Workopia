@@ -15,12 +15,24 @@ loadComponent("navbar");
           <h2 class="text-2xl font-bold mb-6 text-center text-gray-500">
             Job Info
           </h2>
+          <?php
+          if(isset($errors))
+          {
+              foreach($errors as $error)
+              {
+                  ?>
+                  <div class="message my-3 bg-red-200 px-2 rounded py-3"><?=$error ?></div>
+                  <?php
+              }
+          }
+          ?>
           <div class="mb-4">
             <input
               type="text"
               name="title"
               placeholder="Job Title"
               class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["title"] ?? "" ?>"
             />
           </div>
           <div class="mb-4">
@@ -28,7 +40,7 @@ loadComponent("navbar");
               name="description"
               placeholder="Job Description"
               class="w-full px-4 py-2 border rounded focus:outline-none"
-            ></textarea>
+            ><?=$newListingData["description"] ?? "" ?></textarea>
           </div>
           <div class="mb-4">
             <input
@@ -36,6 +48,7 @@ loadComponent("navbar");
               name="salary"
               placeholder="Annual Salary"
               class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["salary"] ?? "" ?>"
             />
           </div>
           <div class="mb-4">
@@ -44,6 +57,7 @@ loadComponent("navbar");
               name="requirements"
               placeholder="Requirements"
               class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["requirements"] ?? "" ?>"
             />
           </div>
           <div class="mb-4">
@@ -52,6 +66,16 @@ loadComponent("navbar");
               name="benefits"
               placeholder="Benefits"
               class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["benefits"] ?? "" ?>"
+            />
+          </div>
+          <div class="mb-4">
+            <input
+              type="text"
+              name="tags"
+              placeholder="Tags"
+              class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["tags"] ?? "" ?>"
             />
           </div>
           <h2 class="text-2xl font-bold mb-6 text-center text-gray-500">
@@ -63,6 +87,7 @@ loadComponent("navbar");
               name="company"
               placeholder="Company Name"
               class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["company"] ?? "" ?>"
             />
           </div>
           <div class="mb-4">
@@ -71,6 +96,7 @@ loadComponent("navbar");
               name="address"
               placeholder="Address"
               class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["address"] ?? "" ?>"
             />
           </div>
           <div class="mb-4">
@@ -79,6 +105,7 @@ loadComponent("navbar");
               name="city"
               placeholder="City"
               class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["city"] ?? "" ?>"
             />
           </div>
           <div class="mb-4">
@@ -87,6 +114,7 @@ loadComponent("navbar");
               name="state"
               placeholder="State"
               class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["state"] ?? "" ?>"
             />
           </div>
           <div class="mb-4">
@@ -95,6 +123,7 @@ loadComponent("navbar");
               name="phone"
               placeholder="Phone"
               class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["phone"] ?? "" ?>"
             />
           </div>
           <div class="mb-4">
@@ -103,6 +132,7 @@ loadComponent("navbar");
               name="email"
               placeholder="Email Address For Applications"
               class="w-full px-4 py-2 border rounded focus:outline-none"
+              value="<?=$newListingData["email"] ?? "" ?>"
             />
           </div>
           <button

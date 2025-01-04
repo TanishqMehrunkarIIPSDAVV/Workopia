@@ -84,3 +84,26 @@ function formatSalary($salary)
 {
     return "₹".number_format(floatval($salary));
 }
+
+/**
+ * Sanitize dirty data
+ *
+ * @param string $dirty
+ * @return string
+ */
+function sanitize($dirty)
+{
+    return filter_var(trim($dirty),FILTER_SANITIZE_SPECIAL_CHARS);
+}
+
+/**
+ * Redirect
+ *
+ * @param string $url
+ * @return void
+ */
+function redirect($url)
+{
+    header("Location: $url");
+    exit;
+}

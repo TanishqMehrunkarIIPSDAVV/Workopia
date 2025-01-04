@@ -51,7 +51,7 @@ class Database
                 $stmt->bindValue(":".$param,$value);
             }
             $stmt->execute();
-            return $stmt;   
+            return $stmt;
         }
         catch(PDOException $e)
         {

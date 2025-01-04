@@ -68,6 +68,32 @@ class ListingController
 
         $newListingData=array_intersect_key($_POST,array_flip($allowedFields));
         $newListingData["user_id"] = 1;
-        inspectDie($newListingData);
+        $newListingData = array_map("sanitize",$newListingData);
+        $requiredFields=["title","description","city","state","email"];
+        $errors=[];
+        foreach($requiredFields as $field)
+        {
+            if(empty($newListingData[$field]) || !Validation::string($newListingData[$field]))
+                $errors[$field] = ucfirst($field)." is  Required!!!";
+        }
+        if(!empty($errors)) load("listings/create",["errors"=>$errors,"newListingData"=>$newListingData]);
+        else
+        {
+            $fields=[];
+            $values=[];
+            foreach($newListingData as $field => $value)
+            {
+                $fields[]=$field;
+                if($value === "")
+                {
+                    $newListingData[$field] = null;
+                }
+                $values[]=":".$field;
+            }
+            $fields=implode(", ",$fields);
+            $values=implode(", ",$values);
+            $this->db->query("INSERT into listings($fields) values($values)",$newListingData);
+            redirect("/listings");
+        }
     }
 }
