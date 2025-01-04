@@ -36,6 +36,7 @@ class ListingController
 
     /**
      * Show a Detailed Listing
+     * @param array $params
      * @return void
      */
     function show($params)
@@ -69,7 +70,7 @@ class ListingController
         $newListingData=array_intersect_key($_POST,array_flip($allowedFields));
         $newListingData["user_id"] = 1;
         $newListingData = array_map("sanitize",$newListingData);
-        $requiredFields=["title","description","city","state","email"];
+        $requiredFields=["title","description","salary","city","state","email"];
         $errors=[];
         foreach($requiredFields as $field)
         {
@@ -93,6 +94,32 @@ class ListingController
             $fields=implode(", ",$fields);
             $values=implode(", ",$values);
             $this->db->query("INSERT into listings($fields) values($values)",$newListingData);
+            redirect("/listings");
+        }
+    }
+
+    /**
+     * Delete a Listing
+     * @param array $params
+     * @return void
+     */
+    function destroy($params)
+    {
+        $id = $params["id"];
+        $params=[
+            "id"=>$id,
+        ];
+
+        $listing=$this->db->query("SELECT * from listings where id = :id",$params)->fetch();
+        if(!$listing)
+        {
+            ErrorController::notFound("Listing Not Found!!!");
+            return;
+        }
+        else
+        {
+            $this->db->query("DELETE from listings where id = :id",$params);
+            $_SESSION["message_success"] = "Listing Deleted Successfully!!!";
             redirect("/listings");
         }
     }
