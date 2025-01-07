@@ -8,17 +8,7 @@ loadComponent("top-banner");
     <section>
       <div class="container mx-auto p-4 mt-4">
         <div class="text-center text-3xl mb-4 font-bold border border-gray-300 p-3">All Jobs</div>
-        <?php
-        if(isset($_SESSION["message_success"]))
-        {
-            ?>
-            <div class="message bg-green-100 p-3 my-3">
-              <?=$_SESSION["message_success"] ?>
-            </div>
-            <?php
-            unset($_SESSION["message_success"]);
-        }
-        ?>
+        <?=loadComponent("message") ?>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <?php
       foreach ($listings as $listing) {
