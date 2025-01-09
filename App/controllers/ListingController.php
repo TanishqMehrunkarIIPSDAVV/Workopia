@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Controllers;
+
+use Framework\Authorization;
 use Framework\Database;
+use Framework\Session;
 use Framework\Validation;
 
 class ListingController
@@ -19,7 +22,7 @@ class ListingController
      */
     function index()
     {
-        $listings = $this->db->query("SELECT * FROM listings")->fetchAll();
+        $listings = $this->db->query("SELECT * FROM listings order by created_at desc")->fetchAll();
         load("listings/index",[
             "listings"=>$listings,
         ]);
@@ -68,7 +71,7 @@ class ListingController
         ];
 
         $newListingData=array_intersect_key($_POST,array_flip($allowedFields));
-        $newListingData["user_id"] = 1;
+        $newListingData["user_id"] = Session::get("user")["id"];
         $newListingData = array_map("sanitize",$newListingData);
         $requiredFields=["title","description","salary","city","state","email"];
         $errors=[];
@@ -94,6 +97,7 @@ class ListingController
             $fields=implode(", ",$fields);
             $values=implode(", ",$values);
             $this->db->query("INSERT into listings($fields) values($values)",$newListingData);
+            Session::setFlash("message_success","Listing Added Successfully!!!");
             redirect("/listings");
         }
     }
@@ -118,8 +122,13 @@ class ListingController
         }
         else
         {
+            if(!Authorization::isOwner($listing->user_id))
+            {
+                Session::setFlash("message_error","Not Authorized to Delete this Listing!!!");
+                return redirect("/listings/$listing->id");
+            }
             $this->db->query("DELETE from listings where id = :id",$params);
-            $_SESSION["message_success"] = "Listing Deleted Successfully!!!";
+            Session::setFlash("message_success","Listing Deleted Successfully!!!");
             redirect("/listings");
         }
     }
@@ -141,6 +150,11 @@ class ListingController
             ErrorController::notFound("Listing Not Found!!!");
             return;
         }
+        if(!Authorization::isOwner($listing->user_id))
+        {
+            Session::setFlash("message_error","Not Authorized to Edit this Listing!!!");
+            return redirect("/listings/$listing->id");
+        } 
         load("listings/edit",[
             "listing"=> $listing
         ]);
@@ -165,6 +179,11 @@ class ListingController
         }
         else
         {
+            if(!Authorization::isOwner($listing->user_id))
+            {
+                Session::setFlash("message_error","Not Authorized to Update this Listing!!!");
+                return redirect("/listings/$listing->id");
+            } 
             $allowedFields=[
                 "title","description","salary","tags","company","address","city","state","phone",
                 "email","requirements","benefits",
@@ -191,9 +210,45 @@ class ListingController
                 $sql = "UPDATE listings set $updatedFields where id = :id";
                 $params=array_merge($params,$updatedValues);
                 $this->db->query($sql,$params);
-                $_SESSION["message_success"] = "Listing Updated!!!";
+                Session::setFlash("message_success","Listing Updated!!!");
                 redirect("/listings/$id");
             }
         }
+    }
+
+    /**
+     * Search Listing by Keywords
+     * @return void
+     */
+    function search()
+    {
+        $keywords = isset($_GET["keywords"]) ? trim($_GET["keywords"]) : "";
+        $location = isset($_GET["location"]) ? trim($_GET["location"]) : "";
+
+        $params=[
+            "keywords"=>"%$keywords%",
+            "location"=>"%$location%",
+        ];
+
+        $sql="SELECT * from listings where (
+            title like :keywords or
+            description like :keywords or
+            salary like :keywords or
+            tags like :keywords or
+            company like :keywords or
+            requirements like :keywords or
+            benefits like :keywords
+        ) and (
+            state like :location or
+            city like :location
+        )";
+
+        $listings = $this->db->query($sql,$params)->fetchAll();
+
+        load("/listings/index",[
+            "listings"=>$listings,
+            "keywords"=>$keywords,
+            "location"=>$location,
+        ]);
     }
 }

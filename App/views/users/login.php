@@ -6,11 +6,12 @@ loadComponent("navbar");
 <div class="flex justify-center items-center mt-20">
       <div class="bg-white p-8 rounded-lg shadow-md w-full md:w-500 mx-6">
         <h2 class="text-4xl text-center font-bold mb-4">Login</h2>
+        <?=loadComponent("error",["errors"=>$errors ?? []]) ?>
         <!-- <div class="message bg-red-100 p-3 my-3">This is an error message.</div>
         <div class="message bg-green-100 p-3 my-3">
           This is a success message.
         </div> -->
-        <form>
+        <form action="/auth/login" method="post">
           <div class="mb-4">
             <input
               type="email"

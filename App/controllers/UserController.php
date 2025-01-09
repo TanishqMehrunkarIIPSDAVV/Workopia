@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use Framework\Database;
+use Framework\Session;
 use Framework\Validation;
 
 class UserController
@@ -96,7 +97,74 @@ class UserController
             ];
             $this->db->query("INSERT into users(name,email,city,state,password)
             values(:name, :email, :city, :state, :password)",$params);
-            redirect("/auth/login");
+
+            $userId = $this->db->conn->lastInsertId();
+            Session::set("user",[
+                "id"=>$userId,
+                "name"=>$name,
+                "email"=>$email,
+                "city"=>$city,
+                "state"=>$state,
+            ]);
+
+            redirect("/");
         }
+    }
+
+    /**
+     * Logout A User
+     * @return void
+     */
+    function logout()
+    {
+        Session::destroy();
+        $params=session_get_cookie_params();
+        setcookie("PHPSESSID","",time() - 86400, $params["path"],$params["domain"]);
+        redirect("/");
+    }
+
+    /**
+     * Authenticate a User
+     * @return void
+     */
+    function authenticate()
+    {
+        $email = $_POST["email"];
+        $password = $_POST["password"];
+        $errors=[];
+
+        if(!Validation::email($email)) $errors["email"] = "Please Enter a Valid Email!!!";
+        if(!Validation::string($password,6,50)) $errors["password"] = "Password length should be between 6 to 50 characters!!!";
+        if(!empty($errors))
+        {
+            load("users/login",["errors"=>$errors]);
+            exit;
+        }
+
+        $params=[
+            "email"=>$email,
+        ];
+
+        $user = $this->db->query("SELECT * from users where email = :email",$params)->fetch();
+        if($user)
+        {
+            if(!password_verify($password,$user->password))
+            {
+                $errors["email"] = "Incorrect Credentials!!!";
+                load("users/login",["errors"=>$errors]);
+                exit;
+            }
+            Session::set("user",[
+                "id"=>$user->id,
+                "name"=>$user->name,
+                "email"=>$user->email,
+                "city"=>$user->city,
+                "state"=>$user->state,
+            ]);
+            redirect("/");
+        }
+        $errors["email"] = "Incorrect Credentials!!!";
+        load("users/login",["errors"=>$errors]);
+        exit;
     }
 }

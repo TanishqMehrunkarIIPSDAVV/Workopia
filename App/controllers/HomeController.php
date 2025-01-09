@@ -18,7 +18,7 @@ class HomeController
      */
     function index()
     {
-        $listings = $this->db->query("SELECT * FROM listings limit 6")->fetchAll();
+        $listings = $this->db->query("SELECT * FROM listings order by created_at desc limit 6")->fetchAll();
         load("home",[
             "listings"=>$listings,
         ]);

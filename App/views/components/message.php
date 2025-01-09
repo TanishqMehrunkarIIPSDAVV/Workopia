@@ -1,20 +1,21 @@
 <?php
-if (isset($_SESSION["message_success"]))
+use Framework\Session;
+$msgSuccess = Session::getFlash("message_success");
+$msgError = Session::getFlash("message_error");
+if ($msgSuccess !== null)
 {
     ?>
         <div class="message bg-green-300 p-3 my-3 font-medium">
-            <?= $_SESSION["message_success"] ?>
+            <?= $msgSuccess ?>
         </div>
     <?php
-        unset($_SESSION["message_success"]);
 }
-else if (isset($_SESSION["message_error"]))
+else if ($msgError !== null)
 {
     ?>
         <div class="message bg-red-300 p-3 my-3 font-medium">
-            <?= $_SESSION["message_error"] ?>
+            <?= $msgError ?>
         </div>
     <?php
-        unset($_SESSION["message_error"]);
 }
 ?>
